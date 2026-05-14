@@ -222,3 +222,19 @@ package.json
 - WordPress: Hostinger
 - App builds: EAS Build (expo.dev, infowolf account, cgen-app project)
 - EAS profile: preview (Android APK)
+
+- Updates to add to cgen-project-state.md:
+SCREENS:
+
+index.tsx — publishBtn style fixed: now outlined green (transparent background, #c8f55a border and text) to match readBtn visual weight. Was previously filled lemon-green.
+
+DEPLOYMENT:
+
+iOS App Store submission COMPLETE — build submitted via EAS CLI, all metadata, screenshots, privacy, tax, DSA compliance done. Submitted for Apple review May 14 2026. Bundle ID: com.cgen.app.
+
+PENDING — update:
+
+Google Play — still pending address verification. Bank statement requested from Mizrahi Tefahot, awaiting email. Once received, upload to Play Console and resubmit.
+App Store (iOS) — remove from pending, mark complete.
+NOTE TO CLAUDE — Next Session Suggestion (30 min build):
+Build a small script that automatically pushes end-of-session state updates to this GitHub file via the GitHub API. The goal: at the end of every build session, Claude generates a structured update and the script commits it directly to cgen-project-state.md without manual copy-paste. This would make the file a live external memory that updates itself. Build this as a standalone tool — one input (the update text), one output (committed to GitHub). Priority: low, but high value long-term.
