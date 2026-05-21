@@ -343,3 +343,39 @@ package.json
 - EAS profile: preview (Android APK)
 - iOS: Submitted to App Store May 14, 2026 — awaiting Apple review
 - Google Play: Pending address verification (bank statement requested)
+
+- --
+
+Session Update — May 21, 2026
+Apple App Store
+
+Received review feedback — two issues flagged: business model clarification and missing account deletion feature
+Replied to Apple with full business model explanation (5 questions answered)
+iOS 1.0.1 build 4 submitted with delete account feature — awaiting review
+
+Google Play
+
+Still awaiting final approval
+
+CGEN Mobile App — Major Restructure
+
+app/index.tsx (root) — fixed wrong token key (cgen_jwt → cgen_token), now correctly redirects logged-in users to /mylab and visitors to /(tabs)
+app/(tabs)/index.tsx — stripped to visitor-only screen (engine cards, privacy box, visitor notice, login button). Redirects logged-in users to /mylab via useFocusEffect
+app/mylab.tsx — new dedicated My Lab screen for logged-in members. Includes: MY LAB header, all 3 engine cards with member text, Saved Intel section, read/publish flow, Support button, Sign Out, decorative separator, and red Delete Account button at the bottom
+app/_layout.tsx — mylab added to Stack navigator
+app/index.tsx (root) — corrected token key
+
+Delete Account Feature
+
+WordPress functions.php — new /cgen/v1/delete-account REST endpoint added. Deletes all user posts then deletes the user account
+mylab.tsx — Delete Account button with confirmation Alert, calls WordPress endpoint, clears all AsyncStorage keys on success, redirects to visitor home
+
+Android APK
+
+New APK built and tested — all features confirmed working including new My Lab screen and Delete Account flow
+
+AI & I — The Build Journal
+
+Chapter One and Two published on ZenGate and shared on Facebook
+Chapter Two corrections noted — "First Light" moved to end of chapter as closing, opening paragraph written for Chapter Three
+Chapter Three keyphrase and meta prepared — pending visual header before publishing
