@@ -379,3 +379,19 @@ AI & I — The Build Journal
 Chapter One and Two published on ZenGate and shared on Facebook
 Chapter Two corrections noted — "First Light" moved to end of chapter as closing, opening paragraph written for Chapter Three
 Chapter Three keyphrase and meta prepared — pending visual header before publishing
+
+URGENT — Pending Fix (May 26, 2026)
+Problem: Reports are not saving to My Lab or Archives. The backend generates the report correctly but fails to save it to WordPress because the SVG image upload returns 401 unauthorized. The post creation never completes.
+Root cause: Astra theme update wiped functions.php which contained the Application Password enabling code. Application Passwords are no longer showing in WordPress profile despite multiple attempts to restore them. The Render backend cannot upload media to WordPress via REST API without Application Passwords.
+Fix ready to implement:
+In main.py on Render/GitHub — in the post_to_wordpress function, wrap the SVG image upload in a condition so it's skipped for member drafts:
+pythonfeatured_media_id = None
+if svg_label != "DRAFT":
+    try:
+        svg_bytes = generate_svg_image(title, svg_label)
+        featured_media_id = upload_image_to_wordpress(svg_bytes, title)
+    except Exception as e:
+        print(f"SVG error: {e}")
+Then in all three engine is_member blocks change svg_label to "DRAFT" in the post_to_wordpress call.
+After fix: Redeploy Render backend. Member reports will save to My Lab without needing image upload. SVG thumbnails still generate at Make Public time.
+Apple App Store: App is currently in review. If Apple tests report generation before this fix is applied, reports will generate but not save to My Lab. This could trigger another rejection.
