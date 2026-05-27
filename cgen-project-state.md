@@ -380,18 +380,34 @@ Chapter One and Two published on ZenGate and shared on Facebook
 Chapter Two corrections noted — "First Light" moved to end of chapter as closing, opening paragraph written for Chapter Three
 Chapter Three keyphrase and meta prepared — pending visual header before publishing
 
-URGENT — Pending Fix (May 26, 2026)
-Problem: Reports are not saving to My Lab or Archives. The backend generates the report correctly but fails to save it to WordPress because the SVG image upload returns 401 unauthorized. The post creation never completes.
-Root cause: Astra theme update wiped functions.php which contained the Application Password enabling code. Application Passwords are no longer showing in WordPress profile despite multiple attempts to restore them. The Render backend cannot upload media to WordPress via REST API without Application Passwords.
-Fix ready to implement:
-In main.py on Render/GitHub — in the post_to_wordpress function, wrap the SVG image upload in a condition so it's skipped for member drafts:
-pythonfeatured_media_id = None
-if svg_label != "DRAFT":
-    try:
-        svg_bytes = generate_svg_image(title, svg_label)
-        featured_media_id = upload_image_to_wordpress(svg_bytes, title)
-    except Exception as e:
-        print(f"SVG error: {e}")
-Then in all three engine is_member blocks change svg_label to "DRAFT" in the post_to_wordpress call.
-After fix: Redeploy Render backend. Member reports will save to My Lab without needing image upload. SVG thumbnails still generate at Make Public time.
-Apple App Store: App is currently in review. If Apple tests report generation before this fix is applied, reports will generate but not save to My Lab. This could trigger another rejection.
+Session Update — May 27, 2026
+RESOLVED — Reports not saving to My Lab (The Lowercase i)
+The two-day bug is fixed. Root cause was a single character mismatch — the secret key in the WordPress Code Snippets had CGEN_APi_2026 (lowercase i) instead of CGEN_API_2026. This caused every POST to the new custom endpoint to return Unauthorized.
+Full fix implemented:
+
+post_to_wordpress in main.py now calls /cgen/v1/create-post instead of /wp/v2/posts — bypasses WordPress REST API Basic Auth entirely
+make_public now calls /cgen/v1/update-post instead of /wp/v2/posts/{id}
+make_public GET request now uses /cgen/v1/my-post/{id} instead of Basic Auth
+Two new WordPress endpoints added to Code Snippets: cgen_create_post and cgen_update_post — both use secret key CGEN_API_2026
+WP_SECRET environment variable added to Render with value CGEN_API_2026
+SVG image upload skipped for member drafts (if status != "draft")
+
+Still broken — needs fix before June 1st build:
+
+Audio and PDF uploads still use Basic Auth (auth=(WP_USER, WP_PASSWORD)) → returns 401 → no audio/PDF on Make Public
+SVG thumbnail upload still uses Basic Auth → no thumbnail on published posts
+Make Public spinner/status message not showing in app
+user_id: 2 visible in published post (display:none not working)
+Make Public missing CTA and Related sections (see memory note)
+
+Pending for June 1st build:
+
+New APK and AAB with all session changes
+MEMBER_LIMIT raised to 30 in all 3 engines for Google Play testing
+intelligence.tsx, validator.tsx, concepts.tsx — currentUserId fix (reads from AsyncStorage directly in runReport)
+Submit new iOS build to Apple with delete account feature
+Share Google Play internal testing link with Victory (Fiverr tester)
+
+Apple App Store: Build 1.0.1 (4) in review. Awaiting approval.
+Google Play: Awaiting June 1st build reset to submit AAB.
+AI & I Book: Chapters 1, 2, 3 published on ZenGate. Chapter on The Lowercase i written, ready to add to Chapter 4.
