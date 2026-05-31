@@ -380,34 +380,68 @@ Chapter One and Two published on ZenGate and shared on Facebook
 Chapter Two corrections noted — "First Light" moved to end of chapter as closing, opening paragraph written for Chapter Three
 Chapter Three keyphrase and meta prepared — pending visual header before publishing
 
-Session Update — May 27, 2026
-RESOLVED — Reports not saving to My Lab (The Lowercase i)
-The two-day bug is fixed. Root cause was a single character mismatch — the secret key in the WordPress Code Snippets had CGEN_APi_2026 (lowercase i) instead of CGEN_API_2026. This caused every POST to the new custom endpoint to return Unauthorized.
-Full fix implemented:
+CGEN Project State — May 31, 2026
+RESOLVED SINCE LAST UPDATE:
 
-post_to_wordpress in main.py now calls /cgen/v1/create-post instead of /wp/v2/posts — bypasses WordPress REST API Basic Auth entirely
-make_public now calls /cgen/v1/update-post instead of /wp/v2/posts/{id}
-make_public GET request now uses /cgen/v1/my-post/{id} instead of Basic Auth
-Two new WordPress endpoints added to Code Snippets: cgen_create_post and cgen_update_post — both use secret key CGEN_API_2026
-WP_SECRET environment variable added to Render with value CGEN_API_2026
+Reports not saving to My Lab — FIXED (The Lowercase i). Secret key mismatch CGEN_APi_2026 → CGEN_API_2026 was the root cause
+post_to_wordpress now calls /cgen/v1/create-post — bypasses WordPress REST API Basic Auth entirely
+make_public now calls /cgen/v1/update-post and /cgen/v1/my-post/{id} — no Basic Auth
+WP_SECRET=CGEN_API_2026 added to Render environment variables
 SVG image upload skipped for member drafts (if status != "draft")
+Audio removed entirely — caused 500 errors on WordPress, dormant functions kept in main.py for future reactivation
+PDF upload working via /cgen/v1/upload-media secret key endpoint ✓
+PDF Download button styled via CSS classes in Customizer ✓
+CTA and Related sections added to make_public for all 3 engines ✓
+SVG thumbnail generation added to make_public ✓
+user_id span removed from all 3 engine is_member blocks in main.py ✓
+attach_media_to_post dead function removed from main.py ✓
+WP_ENVIRONMENT_TYPE=local removed from wp-config.php ✓
+Application Passwords cleaned up via SSH ✓
+SSH disabled on Hostinger ✓
+Complianz cookie plugin deactivated ✓
+APK download button removed from homepage ✓
+mylab.tsx publishing animation — switched to instant UI update on confirmation ✓
+Duplicate detection working — Atoms.dev correctly blocked ✓
+mylab.tsx complete rewrite with correct JSX structure ✓
+Indie Hackers profile created ✓
+Victory A offer accepted on Fiverr — 12 testers, 14 days ✓
 
-Still broken — needs fix before June 1st build:
+URGENT — Fix before build tonight:
+mylab.tsx crashes with ReferenceError: publishingId doesn't exist. In VS Code press Ctrl+H, search for publishingId and remove every reference:
 
-Audio and PDF uploads still use Basic Auth (auth=(WP_USER, WP_PASSWORD)) → returns 401 → no audio/PDF on Make Public
-SVG thumbnail upload still uses Basic Auth → no thumbnail on published posts
-Make Public spinner/status message not showing in app
-user_id: 2 visible in published post (display:none not working)
-Make Public missing CTA and Related sections (see memory note)
+setPublishingId(postId) — remove from top of handlePublish
+setPublishingId(null) — remove from finally block
+publishingId === report.id — remove from disabled prop
+publishingId === report.id — remove from style array
 
-Pending for June 1st build:
+Pending for tonight's build:
 
-New APK and AAB with all session changes
-MEMBER_LIMIT raised to 30 in all 3 engines for Google Play testing
-intelligence.tsx, validator.tsx, concepts.tsx — currentUserId fix (reads from AsyncStorage directly in runReport)
-Submit new iOS build to Apple with delete account feature
-Share Google Play internal testing link with Victory (Fiverr tester)
+Fix mylab.tsx publishingId crash (above)
+eas build --platform android --profile preview → APK for Victory testers
+eas build --platform android --profile production → AAB for Google Play Console
+Upload AAB to Google Play Console internal testing track
+Share internal testing link with Victory at noon June 1st
+Accept Victory's Fiverr offer tonight
 
-Apple App Store: Build 1.0.1 (4) in review. Awaiting approval.
-Google Play: Awaiting June 1st build reset to submit AAB.
-AI & I Book: Chapters 1, 2, 3 published on ZenGate. Chapter on The Lowercase i written, ready to add to Chapter 4.
+App pending (post-build):
+
+currentUserId AsyncStorage fix in all 3 engine files
+MEMBER_LIMIT — testers will be set as Premium users instead of raising limit
+HTML entity decoder in Read screen
+Premium role behavior in app
+
+Store status:
+
+Apple App Store — Build 1.0.1 (4) in review, awaiting approval
+Google Play — Internal testing track ready, awaiting AAB upload
+
+Backend status:
+
+All 3 engines generating and saving correctly ✓
+Make Public working with CTA, Related, PDF button, SVG thumbnail ✓
+WordPress endpoints all in Code Snippets (safe from theme updates) ✓
+
+AI & I Book:
+
+Chapters 1, 2, 3 published on ZenGate
+Chapter 4 material: The Lowercase i, The Twelve, Night Before June, The Comparison — ready to compile
