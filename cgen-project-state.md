@@ -346,102 +346,156 @@ package.json
 
 - --
 
-Session Update — May 21, 2026
-Apple App Store
+CGEN Project State — June 9, 2026
+Platform Overview
 
-Received review feedback — two issues flagged: business model clarification and missing account deletion feature
-Replied to Apple with full business model explanation (5 questions answered)
-iOS 1.0.1 build 4 submitted with delete account feature — awaiting review
+WordPress/Hostinger frontend at c93n.com
+FastAPI backend on Render
+React Native app (Expo/EAS) — Bundle ID: com.cgen.app
+
+
+Store Status
+iOS App Store
+
+Build 1.0.1 (7) submitted — under review
+Rejected 3 times on Guideline 3.1.1 (payments)
+Promo code field removed, upgrade links removed, member wall updated to "OK GOT IT"
+Decision made to implement Apple In-App Purchase (IAP) as the permanent fix before next submission
+RevenueCat identified as the implementation path
 
 Google Play
 
-Still awaiting final approval
+AAB Build 1.0.1 (7) live on internal testing track
+18 testers (Bitrupt team) — Day 8 of 14
+Active days confirmed: ~5-6 out of 14 needed
+Bitrupt paid $125 upfront, $125 + tip on completion
+Communication via Fiverr + Slack
 
-CGEN Mobile App — Major Restructure
 
-app/index.tsx (root) — fixed wrong token key (cgen_jwt → cgen_token), now correctly redirects logged-in users to /mylab and visitors to /(tabs)
-app/(tabs)/index.tsx — stripped to visitor-only screen (engine cards, privacy box, visitor notice, login button). Redirects logged-in users to /mylab via useFocusEffect
-app/mylab.tsx — new dedicated My Lab screen for logged-in members. Includes: MY LAB header, all 3 engine cards with member text, Saved Intel section, read/publish flow, Support button, Sign Out, decorative separator, and red Delete Account button at the bottom
-app/_layout.tsx — mylab added to Stack navigator
-app/index.tsx (root) — corrected token key
+App — Current State (Build 7)
+login.tsx
 
-Delete Account Feature
+Email + password registration — no promo code field
+Display Name field added (optional) — saves to WordPress display_name on registration
+Email validation added
+KeyboardAvoidingView behavior='height' for Android
+Registration JWT fix — checks both jwt and userId as success signals
+AUTH_KEY hardcoded to 'CGEN2026' silently
 
-WordPress functions.php — new /cgen/v1/delete-account REST endpoint added. Deletes all user posts then deletes the user account
-mylab.tsx — Delete Account button with confirmation Alert, calls WordPress endpoint, clears all AsyncStorage keys on success, redirects to visitor home
+intelligence.tsx, validator.tsx, concepts.tsx
 
-Android APK
+KeyboardAvoidingView wrapping with behavior='height' for Android
+Terms & Conditions tappable link to c93n.com/terms-and-conditions
+Field hint text added below Industry and Target Audience in validator
+Member Limit Wall — "OK, GOT IT" button, no upgrade link, no Premium reference
+MEMBER_LIMIT set to 3 for iOS build
 
-New APK built and tested — all features confirmed working including new My Lab screen and Delete Account flow
+mylab.tsx
 
-AI & I — The Build Journal
+Duplicate publish alert — shows Alert if backend returns duplicate:true
+Instant UI publish update on Make Public confirmation
 
-Chapter One and Two published on ZenGate and shared on Facebook
-Chapter Two corrections noted — "First Light" moved to end of chapter as closing, opening paragraph written for Chapter Three
-Chapter Three keyphrase and meta prepared — pending visual header before publishing
+report.tsx
 
-CGEN Project State — May 31, 2026
-RESOLVED SINCE LAST UPDATE:
+Duplicate publish alert added
+MAKE PUBLIC outlined green style
 
-Reports not saving to My Lab — FIXED (The Lowercase i). Secret key mismatch CGEN_APi_2026 → CGEN_API_2026 was the root cause
-post_to_wordpress now calls /cgen/v1/create-post — bypasses WordPress REST API Basic Auth entirely
-make_public now calls /cgen/v1/update-post and /cgen/v1/my-post/{id} — no Basic Auth
-WP_SECRET=CGEN_API_2026 added to Render environment variables
-SVG image upload skipped for member drafts (if status != "draft")
-Audio removed entirely — caused 500 errors on WordPress, dormant functions kept in main.py for future reactivation
-PDF upload working via /cgen/v1/upload-media secret key endpoint ✓
-PDF Download button styled via CSS classes in Customizer ✓
-CTA and Related sections added to make_public for all 3 engines ✓
-SVG thumbnail generation added to make_public ✓
-user_id span removed from all 3 engine is_member blocks in main.py ✓
-attach_media_to_post dead function removed from main.py ✓
-WP_ENVIRONMENT_TYPE=local removed from wp-config.php ✓
-Application Passwords cleaned up via SSH ✓
-SSH disabled on Hostinger ✓
-Complianz cookie plugin deactivated ✓
-APK download button removed from homepage ✓
-mylab.tsx publishing animation — switched to instant UI update on confirmation ✓
-Duplicate detection working — Atoms.dev correctly blocked ✓
-mylab.tsx complete rewrite with correct JSX structure ✓
-Indie Hackers profile created ✓
-Victory A offer accepted on Fiverr — 12 testers, 14 days ✓
+index.tsx
 
-URGENT — Fix before build tonight:
-mylab.tsx crashes with ReferenceError: publishingId doesn't exist. In VS Code press Ctrl+H, search for publishingId and remove every reference:
+Green dividers, visitor privacy box, empty state with lemon-green CTA
+Sign Out grey/muted below Support
+Members Only modal for Concept Generator (register free flow)
 
-setPublishingId(postId) — remove from top of handlePublish
-setPublishingId(null) — remove from finally block
-publishingId === report.id — remove from disabled prop
-publishingId === report.id — remove from style array
 
-Pending for tonight's build:
+Backend (main.py) — Current State
 
-Fix mylab.tsx publishingId crash (above)
-eas build --platform android --profile preview → APK for Victory testers
-eas build --platform android --profile production → AAB for Google Play Console
-Upload AAB to Google Play Console internal testing track
-Share internal testing link with Victory at noon June 1st
-Accept Victory's Fiverr offer tonight
+All 3 engines live with web search, PDF generation, SVG thumbnails
+Active request lock on all 3 engines (prevents duplicate generation)
+max_tokens reduced to 4000 on Intelligence and Validator engines
+No-repetition instruction added to Intelligence and Validator prompts
+INPUT_INVALID protection for visitor path on all 3 engines — blocks publishing gibberish to Archives
+Duplicate check at generation time — Intelligence Engine only
+Duplicate check at publish time — all 3 engines
+Author display name fetched from WordPress and appended to published report content as "Published by [Name]" in lemon-green style
+Audio disconnected (501 error) — functions kept dormant for future reactivation
+Counter loading from WordPress on startup
 
-App pending (post-build):
 
-currentUserId AsyncStorage fix in all 3 engine files
-MEMBER_LIMIT — testers will be set as Premium users instead of raising limit
-HTML entity decoder in Read screen
-Premium role behavior in app
+functions.php (Snippets) — Current State
 
-Store status:
+SVG upload enabled
+Featured image saves correctly on new posts
+All custom endpoints live: my-posts, my-post, get-user-id, rate-engine, check-premium, paypal-webhook, claim-premium, upload-media, create-post, update-post, delete-account, request-delete
+cgen_ratings table created and active
+cgen_premium role registered
+ratings-summary endpoint added (for homepage widget)
 
-Apple App Store — Build 1.0.1 (4) in review, awaiting approval
-Google Play — Internal testing track ready, awaiting AAB upload
 
-Backend status:
+WordPress Site
 
-All 3 engines generating and saving correctly ✓
-Make Public working with CTA, Related, PDF button, SVG thumbnail ✓
-WordPress endpoints all in Code Snippets (safe from theme updates) ✓
+Homepage: "AI Business Intelligence Platform" headline
+Star rating widget live on homepage — shows live total from database
+357+ star ratings accumulated during test period
+20+ registered members
+104+ published reports in Archives
+Upgrade page updated — PayPal completely removed, new pricing displayed:
 
-AI & I Book:
+Pro: $24.99 one-time
+Premium: $6/month or $60/year
+Coming Soon messaging — no payment processing active
 
-Chapters 1, 2, 3 published on ZenGate
-Chapter 4 material: The Lowercase i, The Twelve, Night Before June, The Comparison — ready to compile
+
+
+
+Pending — Post-Test Fix List
+
+Apple IAP implementation — RevenueCat, StoreKit, subscription products in App Store Connect. Required before paid tiers go live on iOS. This is the next major session.
+Duplicate publish alert — backend blocks duplicate publishing, app shows Alert for duplicate:true response in mylab.tsx and report.tsx ✅ (added build 7)
+Expired token UX — no message shown when token expires
+Monthly counter reset — AsyncStorage counters never reset
+Audio briefing reconnection — TTS removed due to 501 error, reconnect after launch
+PDF download monetization — paywall before download button ($1 per download)
+HTML entity decoder — for Read screen title/content display in app
+Draft duplicate detection — same user running same report twice creates duplicate drafts. Plan: detect existing draft with same title/user, append new content as "ADDITIONAL INTELLIGENCE" section instead of creating new draft
+
+
+Community / Membership Features
+
+Display Name collected at registration — shown on published reports as "Published by [Name]"
+Founding Member badge — planned digital badge for first 100 members (design + email campaign pending)
+First 100 registered members get Premium free
+
+
+Pricing Strategy
+
+Phase 1: First 100 members — free Premium access
+Phase 2: Pro $24.99 one-time, Premium $6/month or $60/year — until 500-1000 users
+Phase 3: Raise Premium to $15.99/month after 500-1000 users
+PDF download monetization: $1 per download from Archives (post-launch)
+
+
+AI & I Book
+
+Chapter 1, 2, 3, 4 published on ZenGate ✅
+Chapter 5 "The First Fruit" — written, covers 293-rating discovery, QA report, 11 bug fixes ✅
+Chapter 6 — planned for launch period
+Total planned: 6 chapters
+
+
+LinkedIn Activity
+
+Slack post — 565+ impressions, strong engagement
+Architects/CGEN post — 580+ impressions
+HeyGen post — published, visual split composition
+All posts reference c93n.com/archives and app launch
+
+
+Key Working Preferences
+
+Non-technical explanations, no jargon
+Surgical edits to specific code blocks preferred
+Show exact block to delete before showing replacement
+Never rewrite large files without confirmation first
+Full function rewrites required for structural Python changes
+Plain markdown format for session-end summaries
+GitHub state file updated manually by David
