@@ -346,6 +346,79 @@ package.json
 
 - --
 
+# CGEN Project State — June 12, 2026
+
+## SESSION SUMMARY — Apple IAP Build (the big one)
+
+iOS 1.1.0 (8) SUBMITTED to App Review — full In-App Purchase implementation via RevenueCat, answering all three 3.1.1 rejections. Apple business side 100% complete (agreement + bank + tax forms Active).
+
+## Store Status
+
+### iOS App Store
+- **1.1.0 (8) submitted June 12 — Waiting for Review**
+- Contains full IAP implementation + new tier system
+- All 3 IAP products attached to the version review: CGEN Pro, Premium Monthly, Premium Annual
+- Review notes explain the 3.1.1 resolution; demo credentials provided
+- Paid Apps Agreement: bank account connected (Mizrahi Tefahot), W-8BEN Active, Certificate of Foreign Status Active
+
+### Google Play
+- Bitrupt testing ongoing — keep 12 testers active daily until day 14
+- **DO NOT rebuild Android until Bitrupt finishes** — new tier limits would disrupt testers
+- Reminder message sent re: daily active tester count (12×1 beats 10×3)
+
+## RevenueCat — Fully Configured
+- Account created, email verified, project "CGEN - Concept General"
+- App Store app connected: bundle com.cgen.app, In-App Purchase Key (.p8) uploaded with Key ID + Issuer ID
+- Products: com.cgen.app.pro (non-consumable), com.cgen.app.premium.monthly, com.cgen.app.premium.annual
+- Entitlements: `pro` (1 product), `premium` (2 products)
+- Offering `default`: Lifetime/Monthly/Annual packages mapped to real App Store products (Test Store remnants harmless)
+- Public API key (iOS): appl_QhBYffCpsXeRhtMyWzJvUJfOkFg
+- Skipped (optional, later): App Store Connect API key, Apple Server Notification URL
+
+## NEW — CGEN Access Tiers (FINAL SPEC)
+- **Visitor** (no account): 1 generation per engine on Intelligence + Validator. Concept Generator locked.
+- **Registered unpaid**: 1 additional generation per engine on the 2 engines (separate counter), private Lab. Then wall offers Pro/Premium.
+- **Pro** ($24.99 one-time): 3 generations per month per engine on ALL 3 engines (up to 9/month).
+- **Premium** ($6.99/mo or $69.99/yr): 3 generations per day per engine on all 3 engines (up to 9/day).
+- First 100 registered: auto-granted Premium server-side (existing WordPress auto-claim).
+- Limits are exact (3 = 3): per-tier separate counters eliminated the old shared-counter off-by-one.
+- Counters bump only on successful generation; errors don't consume.
+
+## App Code — Build 8 Changes
+- **package**: react-native-purchases installed (requires EAS build — Expo Go won't work)
+- **_layout.tsx**: Purchases.configure on startup (iOS only) + refreshTierStatus() on every app launch — checks WordPress /check-premium (source of truth for Premium incl. manual grants) AND RevenueCat getCustomerInfo (source of truth for purchases). Fixes the "manual Premium needs re-login" problem.
+- **intelligence.tsx / validator.tsx / concepts.tsx**: full tier system rewrite
+  - Counter keys per engine: visitor (cgen_intel_count etc.), free member (cgen_m_intel_count etc.), Pro month-stamped (cgen_pro_intel etc.), Premium day-stamped (cgen_prem_intel etc.)
+  - Period-stamped counters self-reset (format "period|count") — kills the never-resetting counter bug for paid tiers
+  - Purchase wall modes: upgrade (all 3 products), pro-limit (subscriptions only), premium-limit (no products, "refreshes tomorrow"), locked (concepts, for visitor/free)
+  - Live Apple prices via offerings; Restore Purchases button; Terms+Privacy links in wall
+  - Android always falls back to "OK GOT IT" wall — Play build behavior unchanged
+- **login.tsx**: sets cgen_tier on login/register from both WordPress check-premium and RevenueCat entitlements
+- **app.json**: version 1.1.0, buildNumber 8
+- AsyncStorage new keys: cgen_tier, cgen_m_*_count, cgen_pro_*, cgen_prem_* (per engine)
+
+## App Store Connect — Product Metadata
+- All 3 product descriptions rewritten: consistent "Private Lab" naming, engine names (Market Research, Idea Validator, Concept Generator), exact numbers matching code, NO "unlimited", NO "triggered" language
+- Subscription group localized as "CGEN Premium" (was the hidden Missing Metadata blocker)
+- Review screenshots uploaded per subscription (iPad size)
+- App description updated: Concept Generator no longer tagged "(Premium)", MEMBERSHIPS section added
+- Promotional text updated with memberships mention
+
+## Pricing Strategy (updated)
+- Pro $24.99 one-time: 3/month per engine, all 3 engines
+- Premium $6.99/month or $69.99/year: 3/day per engine, all 3 engines
+- First 100 members: free Premium
+- (replaces old $6/$60 PayPal-era pricing)
+
+## Pending — Next Sessions
+- [ ] Await Apple review verdict on 1.1.0 (8)
+- [ ] index.tsx: align home-screen Concept Generator modal with new tiers (registration alone no longer unlocks it)
+- [ ] Backend awareness of tiers (currently counters are app-side only — reinstall resets them; server-side enforcement later)
+- [ ] Apple Server Notification URL → paste into App Store Connect (instant renewal/cancellation sync)
+- [ ] Android build with tier system — ONLY after Bitrupt completes
+- [ ] Expired token UX, HTML entity decoder, audio reconnection, draft duplicate detection (carried forward)
+- [ ] AI & I Chapter 6 — this session is the obvious material
+
 CGEN Project State — June 9, 2026
 Platform Overview
 
