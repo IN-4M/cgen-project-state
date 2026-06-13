@@ -419,7 +419,13 @@ iOS 1.1.0 (8) SUBMITTED to App Review — full In-App Purchase implementation vi
 - [ ] Expired token UX, HTML entity decoder, audio reconnection, draft duplicate detection (carried forward)
 - [ ] AI & I Chapter 6 — this session is the obvious material
 
-CGEN Project State — June 9, 2026
+      CGEN Project State - June 13, 2026
+      Apple Store — Current State (Build 1.1.0  8) Submited for review.
+      Google Play - Bitrupt and test team 10 days out of 14 — Started on 2/06/26 - 2 Suthurdays off, four days left, then production access application · Asif's reply on the UX review.
+      report.tsx title-decode fix saved locally (rides in the next build)
+      The 522-ratings milestone. Chapter 5 AI & I published.
+      
+CGEN Project State — June 9, 2026 
 Platform Overview
 
 WordPress/Hostinger frontend at c93n.com
