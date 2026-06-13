@@ -425,12 +425,36 @@ iOS 1.1.0 (8) SUBMITTED to App Review — full In-App Purchase implementation vi
       report.tsx title-decode fix saved locally (rides in the next build)
       The 522-ratings milestone. Chapter 5 AI & I published.
       
-CGEN Project State — June 9, 2026 
-Platform Overview
+# CGEN Project State — June 13, 2026
 
-WordPress/Hostinger frontend at c93n.com
-FastAPI backend on Render
-React Native app (Expo/EAS) — Bundle ID: com.cgen.app
+## Store Status
+- **Apple App Store:** Build 1.1.0 (8) submitted, in review. Full IAP (RevenueCat), tier system, bank + tax forms Active.
+- **Google Play:** Bitrupt closed test, day 10 of 14 (started June 2, two Sundays off). 4 days left, then apply for production access. Android still on build 7 — rebuild to 8 AFTER test completes, together with Google Play billing connection.
+- 522 star ratings (day 10) — passed the 500 prediction 4 days early.
+
+## DECISION — Founding member reward changed (important)
+- **First 100 members now get free PRO, not free Premium.** Reason: free Premium (3/day, all engines) could cost up to ~$19/user/month in API — 100 of them could sink CGEN pre-revenue. Free Pro (3/month per engine, 9/month total) caps founder cost to ~$1–2/user/month. Survivable, still a real lifetime gift.
+- Coworkers confirmed 9 generations/month is strong value for real work.
+
+## NEXT BUILD QUEUE (batch before building 8 iOS)
+Hold all of these for ONE build to avoid wasted builds:
+1. **Create WordPress `Pro` role** (like existing CGEN Premium role). David assigns manually: Subscriber → Pro, for the 100 founders and any edge cases. Same as how testers were switched to Premium.
+2. **Backend + app must learn to read Pro from WordPress** — currently the app can ask /check-premium for Premium, but has NO way to hear "this user is Pro" from the site. Needs: WordPress endpoint returns tier (premium/pro/free), and app (_layout.tsx + login.tsx) sets cgen_tier from it. Without this, manual Pro switches won't be seen by the app. (Same class as the manual-Premium-refresh fix already done.)
+3. **report.tsx title-decode fix** — already saved locally, rides in next build.
+4. Subscriber = registered, didn't pay. Gets the small free taste, then hits the wall.
+Pro = paid (or one of the 100 founders you manually switch). Gets 3/month per engine.
+5. index.tsx Concept Generator modal — align with new tiers (carried from June 12).
+
+## Cost / Billing notes
+- June API spend: ~$83 of $500 limit at day 13 (~$6.40/day avg during testing surge). Healthy.
+- Daily "$10 due" charges were AUTO-RELOAD top-ups, not daily spend — not a problem.
+- Token volume 13.3M last 7 days (+61%) = Bitrupt testing surge, expected.
+- Post-launch: monitor real (non-tester) per-Premium-user cost. If heavy users exceed $6.99 revenue, Phase 3 price ($15.99) 
+
+## Other
+- Bitrupt: respect Pakistan weekend (Sundays off) — no messages on quiet days. Relationship warm, future projects discussed.
+- Asif UX review: countered his 40-hr package with scoped $70–100 website review. Awaiting reply.
+- Chapter 5 "The First Fruit" published to ZenGate + Facebook. Closing line corrected to day 10 / 522 ratings.
 
 
 Store Status
