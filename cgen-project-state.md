@@ -436,7 +436,7 @@ iOS 1.1.0 (8) SUBMITTED to App Review — full In-App Purchase implementation vi
 - **First 100 members now get free PRO, not free Premium.** Reason: free Premium (3/day, all engines) could cost up to ~$19/user/month in API — 100 of them could sink CGEN pre-revenue. Free Pro (3/month per engine, 9/month total) caps founder cost to ~$1–2/user/month. Survivable, still a real lifetime gift.
 - Coworkers confirmed 9 generations/month is strong value for real work.
 
-## NEXT BUILD QUEUE (batch before building 8 iOS)
+## NEXT BUILD QUEUE (batch before building 8-9 iOS)
 Hold all of these for ONE build to avoid wasted builds:
 1. **Create WordPress `Pro` role** (like existing CGEN Premium role). David assigns manually: Subscriber → Pro, for the 100 founders and any edge cases. Same as how testers were switched to Premium.
 2. **Backend + app must learn to read Pro from WordPress** — currently the app can ask /check-premium for Premium, but has NO way to hear "this user is Pro" from the site. Needs: WordPress endpoint returns tier (premium/pro/free), and app (_layout.tsx + login.tsx) sets cgen_tier from it. Without this, manual Pro switches won't be seen by the app. (Same class as the manual-Premium-refresh fix already done.)
@@ -455,6 +455,7 @@ Pro = paid (or one of the 100 founders you manually switch). Gets 3/month per en
 - Bitrupt: respect Pakistan weekend (Sundays off) — no messages on quiet days. Relationship warm, future projects discussed.
 - Asif UX review: countered his 40-hr package with scoped $70–100 website review. Awaiting reply.
 - Chapter 5 "The First Fruit" published to ZenGate + Facebook. Closing line corrected to day 10 / 522 ratings.
+- CGEN site About Us page fully rewritten — repositioned from single-engine Concept Generator identity to three-engine privacy-first platform; dropped personal-story lead, reframed founder bio (third person), updated Direction section to real roadmap (app, briefings, Archives).
 
 
 Store Status
