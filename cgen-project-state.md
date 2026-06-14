@@ -418,12 +418,6 @@ iOS 1.1.0 (8) SUBMITTED to App Review — full In-App Purchase implementation vi
 - [ ] Android build with tier system — ONLY after Bitrupt completes
 - [ ] Expired token UX, HTML entity decoder, audio reconnection, draft duplicate detection (carried forward)
 - [ ] AI & I Chapter 6 — this session is the obvious material
-
-      CGEN Project State - June 13, 2026
-      Apple Store — Current State (Build 1.1.0  8) Submited for review.
-      Google Play - Bitrupt and test team 10 days out of 14 — Started on 2/06/26 - 2 Suthurdays off, four days left, then production access application · Asif's reply on the UX review.
-      report.tsx title-decode fix saved locally (rides in the next build)
-      The 522-ratings milestone. Chapter 5 AI & I published.
       
 # CGEN Project State — June 13, 2026
 
@@ -456,6 +450,7 @@ Pro = paid (or one of the 100 founders you manually switch). Gets 3/month per en
 - Asif UX review: countered his 40-hr package with scoped $70–100 website review. Awaiting reply.
 - Chapter 5 "The First Fruit" published to ZenGate + Facebook. Closing line corrected to day 10 / 522 ratings.
 - CGEN site About Us page fully rewritten — repositioned from single-engine Concept Generator identity to three-engine privacy-first platform; dropped personal-story lead, reframed founder bio (third person), updated Direction section to real roadmap (app, briefings, Archives).
+- All 5 legal docs updated to four-tier model + correct pricing + Apple/Google/RevenueCat/PayPal payment structure. About Us page rewritten (three-engine, privacy-first identity).
 
 
 Store Status
