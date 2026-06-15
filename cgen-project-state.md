@@ -452,6 +452,43 @@ Pro = paid (or one of the 100 founders you manually switch). Gets 3/month per en
 - CGEN site About Us page fully rewritten — repositioned from single-engine Concept Generator identity to three-engine privacy-first platform; dropped personal-story lead, reframed founder bio (third person), updated Direction section to real roadmap (app, briefings, Archives).
 - All 5 legal docs updated to four-tier model + correct pricing + Apple/Google/RevenueCat/PayPal payment structure. About Us page rewritten (three-engine, privacy-first identity).
 
+# CGEN Project State — June 16, 2026
+
+## CRITICAL FINDING — Android closed test was never counting
+- Discovered the entire June 1–16 Bitrupt test ran on the WRONG Google Play track.
+- Build 7 was on **Internal testing**, not **Closed testing**. The opt-in link shared with testers was an internal-test link (`/apps/internaltest/...`), so testers opted into internal — which does NOT count toward production access.
+- Play Console "Apply for production" showed: **0 testers opted in**, closed-test requirement not started.
+- Root cause: link error on my end (sent internal link, assumed it was the closed opt-in link). Not Bitrupt's fault.
+- ~15 days lost on the Android production timeline (not 10 — June 1 to June 16). API cost ~$10/day during that period. Net gains: homepage star ratings (real), one bug (registration-failure) that wouldn't have been caught solo, and hard-won knowledge of how Google closed testing actually works.
+- **Does NOT affect:** the app itself (built, stable), Apple submission (still in review), or any other work. Only the Android admin track was delayed.
+
+## FIX DONE TODAY
+- Created proper **Closed testing** release with build 7 (1.0.1).
+- Added countries/regions to the closed track (was missing — caused rollout error).
+- Cleared advertising-ID declaration (App content → Advertising ID → No, app has no ads).
+- Correct closed opt-in link: **https://play.google.com/apps/testing/com.cgen.app** (note `/testing/` not `/internaltest/`).
+- Invited Asif to Play Console (view access) for transparency on opt-in count.
+- Sent Bitrupt fresh-start offer: $137.24 at restart tomorrow + $170.00 at end of 14-day test, both with tip + review. Requirement clarified: 12 testers minimum opted in via correct link (Google's hard minimum) + daily activity. Possible call ~12:00 noon tomorrow.
+
+## NEXT — verify restart is counting
+- Watch Play Console "testers opted in" count climb as Bitrupt team accepts the correct link. When it hits 12+, the real 14-day clock starts.
+- Each tester must: open link → tap "Become a tester"/accept → then use app. The accept step is what was missing before.
+
+## NEXT BUILD QUEUE (batch into one build — 8→9 iOS + Android closed build)
+1. **Pro role recognition** — create WordPress `Pro` role (like CGEN Premium role). Backend endpoint returns tier (premium/pro/free); app (_layout.tsx + login.tsx) reads it and sets cgen_tier. Without this, manual Pro switches aren't seen by the app. Subscriber = registered unpaid; Pro = paid or one of first 100 manually promoted. First 100 = free Pro for life (changed from free Premium — cost protection).
+2. **report.tsx title-decode fix** — already saved locally (stripHtml on report.title).
+3. **Delete draft from My Lab** — private draft only, Archives untouched. Frees testers/users from duplicate-block when re-running a topic. MUST have confirmation pop-up (same Alert pattern as publish).
+4. **FAQ link button in My Lab** — at bottom next to SUPPORT, Linking.openURL to new site FAQ page.
+5. **index.tsx** — align Concept Generator modal with new tiers (registration alone no longer unlocks it).
+
+## INDEPENDENT WEB WORK (no build needed)
+- Build FAQ page on c93n.com (WordPress). Draft Q&As anytime — doesn't block the app build.
+
+## STATUS SNAPSHOT
+- **iOS:** 1.1.0 (8) in Apple review (submitted June 12, full IAP + tier system).
+- **Android:** closed test restarting tomorrow on correct track, clock starts when 12+ opt in.
+- **Site:** all 5 legal docs current (4-tier model, correct pricing, Apple/Google/RevenueCat/PayPal). About Us rebuilt (3-engine, privacy-first). Homepage star widget live (~522+).
+- **Book:** AI & I Ch.5 published. Ch.6 ("The Quiet Work") drafted intro — but the real Ch.6 story is now this: the day 15 days turned out not to count, and the restart. Stronger chapter than planned.
 
 Store Status
 iOS App Store
