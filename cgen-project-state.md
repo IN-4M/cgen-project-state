@@ -489,7 +489,12 @@ Pro = paid (or one of the 100 founders you manually switch). Gets 3/month per en
 - **Android:** closed test restarting tomorrow on correct track, clock starts when 12+ opt in.
 - **Site:** all 5 legal docs current (4-tier model, correct pricing, Apple/Google/RevenueCat/PayPal). About Us rebuilt (3-engine, privacy-first). Homepage star widget live (~522+).
 - **Book:** AI & I Ch.5 published. Ch.6 ("The Quiet Work") drafted intro — but the real Ch.6 story is now this: the day 15 days turned out not to count, and the restart. Stronger chapter than planned.
-
+## BACKEND FIXES — queue (main.py)
+- Missing post title: some generated reports save with full content but "(no title)" — title step (business name + report number) not firing before save. Ensure title is set before the post is written. Same reliability family as HTML-entity/save issues.
+- Note: unpublished duplicate drafts are NOT counted by the backend (only published/Archives reports are dedup-checked) — confirmed expected behavior, no fix needed.
+## BACKEND FIXES — queue (main.py) [add to existing]
+- Partial-report dedup bug: when a near-duplicate business name is detected (e.g. misspelling then correct spelling minutes apart), the section-skip logic suppresses the first half of the report and emits only Media & Press → Status → Verdict. Web search runs fine; section assembly drops Identity/Market Position/Traction/Financial. Fix: dedup should either (a) cleanly block with the duplicate message, or (b) generate a full report — never emit a half. Review the section-skip path in the generation flow.
+- 
 Store Status
 iOS App Store
 
