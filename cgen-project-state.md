@@ -346,6 +346,151 @@ package.json
 
 - --
 
+Store Status
+iOS App Store
+
+Build 1.0.1 (7) submitted — under review
+Rejected 3 times on Guideline 3.1.1 (payments)
+Promo code field removed, upgrade links removed, member wall updated to "OK GOT IT"
+Decision made to implement Apple In-App Purchase (IAP) as the permanent fix before next submission
+RevenueCat identified as the implementation path
+
+Google Play
+
+AAB Build 1.0.1 (7) live on internal testing track
+18 testers (Bitrupt team) — Day 8 of 14
+Active days confirmed: ~5-6 out of 14 needed
+Bitrupt paid $125 upfront, $125 + tip on completion
+Communication via Fiverr + Slack
+
+
+App — Current State (Build 7)
+login.tsx
+
+Email + password registration — no promo code field
+Display Name field added (optional) — saves to WordPress display_name on registration
+Email validation added
+KeyboardAvoidingView behavior='height' for Android
+Registration JWT fix — checks both jwt and userId as success signals
+AUTH_KEY hardcoded to 'CGEN2026' silently
+
+intelligence.tsx, validator.tsx, concepts.tsx
+
+KeyboardAvoidingView wrapping with behavior='height' for Android
+Terms & Conditions tappable link to c93n.com/terms-and-conditions
+Field hint text added below Industry and Target Audience in validator
+Member Limit Wall — "OK, GOT IT" button, no upgrade link, no Premium reference
+MEMBER_LIMIT set to 3 for iOS build
+
+mylab.tsx
+
+Duplicate publish alert — shows Alert if backend returns duplicate:true
+Instant UI publish update on Make Public confirmation
+
+report.tsx
+
+Duplicate publish alert added
+MAKE PUBLIC outlined green style
+
+index.tsx
+
+Green dividers, visitor privacy box, empty state with lemon-green CTA
+Sign Out grey/muted below Support
+Members Only modal for Concept Generator (register free flow)
+
+
+Backend (main.py) — Current State
+
+All 3 engines live with web search, PDF generation, SVG thumbnails
+Active request lock on all 3 engines (prevents duplicate generation)
+max_tokens reduced to 4000 on Intelligence and Validator engines
+No-repetition instruction added to Intelligence and Validator prompts
+INPUT_INVALID protection for visitor path on all 3 engines — blocks publishing gibberish to Archives
+Duplicate check at generation time — Intelligence Engine only
+Duplicate check at publish time — all 3 engines
+Author display name fetched from WordPress and appended to published report content as "Published by [Name]" in lemon-green style
+Audio disconnected (501 error) — functions kept dormant for future reactivation
+Counter loading from WordPress on startup
+
+
+functions.php (Snippets) — Current State
+
+SVG upload enabled
+Featured image saves correctly on new posts
+All custom endpoints live: my-posts, my-post, get-user-id, rate-engine, check-premium, paypal-webhook, claim-premium, upload-media, create-post, update-post, delete-account, request-delete
+cgen_ratings table created and active
+cgen_premium role registered
+ratings-summary endpoint added (for homepage widget)
+
+
+WordPress Site
+
+Homepage: "AI Business Intelligence Platform" headline
+Star rating widget live on homepage — shows live total from database
+357+ star ratings accumulated during test period
+20+ registered members
+104+ published reports in Archives
+Upgrade page updated — PayPal completely removed, new pricing displayed:
+
+Pro: $24.99 one-time
+Premium: $6/month or $60/year
+Coming Soon messaging — no payment processing active
+
+
+Pending — Post-Test Fix List
+
+Apple IAP implementation — RevenueCat, StoreKit, subscription products in App Store Connect. Required before paid tiers go live on iOS. This is the next major session.
+Duplicate publish alert — backend blocks duplicate publishing, app shows Alert for duplicate:true response in mylab.tsx and report.tsx ✅ (added build 7)
+Expired token UX — no message shown when token expires
+Monthly counter reset — AsyncStorage counters never reset
+Audio briefing reconnection — TTS removed due to 501 error, reconnect after launch
+PDF download monetization — paywall before download button ($1 per download)
+HTML entity decoder — for Read screen title/content display in app
+Draft duplicate detection — same user running same report twice creates duplicate drafts. Plan: detect existing draft with same title/user, append new content as "ADDITIONAL INTELLIGENCE" section instead of creating new draft
+
+
+Community / Membership Features
+
+Display Name collected at registration — shown on published reports as "Published by [Name]"
+Founding Member badge — planned digital badge for first 100 members (design + email campaign pending)
+First 100 registered members get Premium free
+
+
+Pricing Strategy
+
+Phase 1: First 100 members — free Premium access
+Phase 2: Pro $24.99 one-time, Premium $6/month or $60/year — until 500-1000 users
+Phase 3: Raise Premium to $15.99/month after 500-1000 users
+PDF download monetization: $1 per download from Archives (post-launch)
+
+
+AI & I Book
+
+Chapter 1, 2, 3, 4 published on ZenGate ✅
+Chapter 5 "The First Fruit" — written, covers 293-rating discovery, QA report, 11 bug fixes ✅
+Chapter 6 — planned for launch period
+Total planned: 6 chapters
+
+
+LinkedIn Activity
+
+Slack post — 565+ impressions, strong engagement
+Architects/CGEN post — 580+ impressions
+HeyGen post — published, visual split composition
+All posts reference c93n.com/archives and app launch
+
+
+Key Working Preferences
+
+Non-technical explanations, no jargon
+Surgical edits to specific code blocks preferred
+Show exact block to delete before showing replacement
+Never rewrite large files without confirmation first
+Full function rewrites required for structural Python changes
+Plain markdown format for session-end summaries
+GitHub state file updated manually by David
+
+
 # CGEN Project State — June 12, 2026
 
 ## SESSION SUMMARY — Apple IAP Build (the big one)
@@ -494,149 +639,55 @@ Pro = paid (or one of the 100 founders you manually switch). Gets 3/month per en
 - Note: unpublished duplicate drafts are NOT counted by the backend (only published/Archives reports are dedup-checked) — confirmed expected behavior, no fix needed.
 ## BACKEND FIXES — queue (main.py) [add to existing]
 - Partial-report dedup bug: when a near-duplicate business name is detected (e.g. misspelling then correct spelling minutes apart), the section-skip logic suppresses the first half of the report and emits only Media & Press → Status → Verdict. Web search runs fine; section assembly drops Identity/Market Position/Traction/Financial. Fix: dedup should either (a) cleanly block with the duplicate message, or (b) generate a full report — never emit a half. Review the section-skip path in the generation flow.
-- 
-Store Status
-iOS App Store
 
-Build 1.0.1 (7) submitted — under review
-Rejected 3 times on Guideline 3.1.1 (payments)
-Promo code field removed, upgrade links removed, member wall updated to "OK GOT IT"
-Decision made to implement Apple In-App Purchase (IAP) as the permanent fix before next submission
-RevenueCat identified as the implementation path
+- # CGEN Project State — June 17, 2026
 
-Google Play
+## DONE TODAY — WordPress Pro tier (backend complete + tested)
+- Created `cgen_pro` role via snippet "Create CGEN Pro Role": add_role('cgen_pro', 'CGEN Pro', array('read' => true)). Appears in Users role dropdown beside CGEN Premium.
+- Created `/check-pro` endpoint (separate snippet "CGEN Check Pro Endpoint") — exact twin of /check-premium: JWT → user_id param → session fallback chain, checks in_array('cgen_pro', $user->roles), returns {user_id, is_pro}.
+- TESTED both ways: user 118 (not Pro) → is_pro:false; user 11 / ali@gmail.com (CGEN Pro) → is_pro:true. Working.
+- Endpoint URL: https://c93n.com/wp-json/cgen/v1/check-pro?user_id=X&JWT=xxx
+- NOTE: a user has exactly ONE role/tier at a time (no double roles). Subscriber → manually promoted to CGEN Pro for the 100 founders, or via purchase.
 
-AAB Build 1.0.1 (7) live on internal testing track
-18 testers (Bitrupt team) — Day 8 of 14
-Active days confirmed: ~5-6 out of 14 needed
-Bitrupt paid $125 upfront, $125 + tip on completion
-Communication via Fiverr + Slack
+## NEXT SESSION — APP SIDE (build 9). Do these together, ONE build:
+All surgical edits — request current file before editing each (files may have changed).
 
+1. **Pro recognition in app** (_layout.tsx + login.tsx):
+   - On startup (refreshTierStatus) and on login/register, call BOTH /check-premium AND /check-pro.
+   - Tier priority: premium > pro > free. Set cgen_tier accordingly. (Premium wins only as a safety default; in practice users hold one role.)
+   - Mirror the existing /check-premium fetch pattern exactly. WordPress is source of truth for manual Pro/Premium grants; RevenueCat is source of truth for purchases (already wired).
+   - This makes manually-assigned Pro founders recognized by the app on next launch (same fix pattern as the Premium-refresh fix already done).
 
-App — Current State (Build 7)
-login.tsx
+2. **My Lab "+" menu redesign** (mylab.tsx):
+   - Replace the row of linked buttons with ONE small lemon-green "+" square at the bottom.
+   - Tapping "+" opens a popup/modal list: Sign Out, FAQ, Browse CGEN, Upgrade, Support, Delete Account.
+   - Delete Account MUST be visually separated (different color, bottom of list) with its existing confirmation — never a mis-tap from Sign Out.
+   - "Upgrade" item opens the purchase screen — this ALSO satisfies Apple's 2.1b rejection (reviewer couldn't find IAPs; a visible Upgrade entry point fixes it permanently).
 
-Email + password registration — no promo code field
-Display Name field added (optional) — saves to WordPress display_name on registration
-Email validation added
-KeyboardAvoidingView behavior='height' for Android
-Registration JWT fix — checks both jwt and userId as success signals
-AUTH_KEY hardcoded to 'CGEN2026' silently
+3. **Visible Upgrade entry on Visitor screen too** (per Apple 2.1b) — bottom, reachable without hitting the wall.
 
-intelligence.tsx, validator.tsx, concepts.tsx
+4. **Delete draft from My Lab** (mylab.tsx + backend endpoint):
+   - Private draft only, Archives untouched. Confirmation pop-up required (Alert pattern like publish).
+   - Frees users from duplicate-block when re-running a topic.
 
-KeyboardAvoidingView wrapping with behavior='height' for Android
-Terms & Conditions tappable link to c93n.com/terms-and-conditions
-Field hint text added below Industry and Target Audience in validator
-Member Limit Wall — "OK, GOT IT" button, no upgrade link, no Premium reference
-MEMBER_LIMIT set to 3 for iOS build
+5. **report.tsx title-decode fix** — already saved locally (stripHtml on report.title).
 
-mylab.tsx
+6. **FAQ page** — build on c93n.com (WordPress, web work, no build needed). FAQ menu item links to it.
 
-Duplicate publish alert — shows Alert if backend returns duplicate:true
-Instant UI publish update on Make Public confirmation
+7. **index.tsx** — align Concept Generator modal with new tiers.
 
-report.tsx
+## APPLE — build 8 (1.1.0) rejection status
+- 3 issues from June 13 review:
+  - 2.3.2 duplicate promo images → FIXED (3 unique images for Pro/Monthly/Annual).
+  - 3.1.2(c) EULA link → FIXED (Terms + Privacy links added to App Description; Privacy URL in its field).
+  - 2.1(b) reviewer couldn't find IAPs → needs build 9 with visible Upgrade button (item 2/3 above). This is the reason build 9 is needed before resubmitting.
 
-Duplicate publish alert added
-MAKE PUBLIC outlined green style
+## BACKEND FIXES — queue (main.py), separate future session:
+- Missing post title: reports save with full content but "(no title)" — title step not firing before save.
+- Partial-report dedup bug: near-duplicate business name (misspelling then correct) makes section-skip logic emit only Media&Press→Status→Verdict, dropping first half. Fix: dedup should hard-block OR generate full — never half.
 
-index.tsx
-
-Green dividers, visitor privacy box, empty state with lemon-green CTA
-Sign Out grey/muted below Support
-Members Only modal for Concept Generator (register free flow)
-
-
-Backend (main.py) — Current State
-
-All 3 engines live with web search, PDF generation, SVG thumbnails
-Active request lock on all 3 engines (prevents duplicate generation)
-max_tokens reduced to 4000 on Intelligence and Validator engines
-No-repetition instruction added to Intelligence and Validator prompts
-INPUT_INVALID protection for visitor path on all 3 engines — blocks publishing gibberish to Archives
-Duplicate check at generation time — Intelligence Engine only
-Duplicate check at publish time — all 3 engines
-Author display name fetched from WordPress and appended to published report content as "Published by [Name]" in lemon-green style
-Audio disconnected (501 error) — functions kept dormant for future reactivation
-Counter loading from WordPress on startup
-
-
-functions.php (Snippets) — Current State
-
-SVG upload enabled
-Featured image saves correctly on new posts
-All custom endpoints live: my-posts, my-post, get-user-id, rate-engine, check-premium, paypal-webhook, claim-premium, upload-media, create-post, update-post, delete-account, request-delete
-cgen_ratings table created and active
-cgen_premium role registered
-ratings-summary endpoint added (for homepage widget)
-
-
-WordPress Site
-
-Homepage: "AI Business Intelligence Platform" headline
-Star rating widget live on homepage — shows live total from database
-357+ star ratings accumulated during test period
-20+ registered members
-104+ published reports in Archives
-Upgrade page updated — PayPal completely removed, new pricing displayed:
-
-Pro: $24.99 one-time
-Premium: $6/month or $60/year
-Coming Soon messaging — no payment processing active
-
-
-
-
-Pending — Post-Test Fix List
-
-Apple IAP implementation — RevenueCat, StoreKit, subscription products in App Store Connect. Required before paid tiers go live on iOS. This is the next major session.
-Duplicate publish alert — backend blocks duplicate publishing, app shows Alert for duplicate:true response in mylab.tsx and report.tsx ✅ (added build 7)
-Expired token UX — no message shown when token expires
-Monthly counter reset — AsyncStorage counters never reset
-Audio briefing reconnection — TTS removed due to 501 error, reconnect after launch
-PDF download monetization — paywall before download button ($1 per download)
-HTML entity decoder — for Read screen title/content display in app
-Draft duplicate detection — same user running same report twice creates duplicate drafts. Plan: detect existing draft with same title/user, append new content as "ADDITIONAL INTELLIGENCE" section instead of creating new draft
-
-
-Community / Membership Features
-
-Display Name collected at registration — shown on published reports as "Published by [Name]"
-Founding Member badge — planned digital badge for first 100 members (design + email campaign pending)
-First 100 registered members get Premium free
-
-
-Pricing Strategy
-
-Phase 1: First 100 members — free Premium access
-Phase 2: Pro $24.99 one-time, Premium $6/month or $60/year — until 500-1000 users
-Phase 3: Raise Premium to $15.99/month after 500-1000 users
-PDF download monetization: $1 per download from Archives (post-launch)
-
-
-AI & I Book
-
-Chapter 1, 2, 3, 4 published on ZenGate ✅
-Chapter 5 "The First Fruit" — written, covers 293-rating discovery, QA report, 11 bug fixes ✅
-Chapter 6 — planned for launch period
-Total planned: 6 chapters
-
-
-LinkedIn Activity
-
-Slack post — 565+ impressions, strong engagement
-Architects/CGEN post — 580+ impressions
-HeyGen post — published, visual split composition
-All posts reference c93n.com/archives and app launch
-
-
-Key Working Preferences
-
-Non-technical explanations, no jargon
-Surgical edits to specific code blocks preferred
-Show exact block to delete before showing replacement
-Never rewrite large files without confirmation first
-Full function rewrites required for structural Python changes
-Plain markdown format for session-end summaries
-GitHub state file updated manually by David
+## ANDROID / Bitrupt
+- Closed test restarting on CORRECT track (build 7 on Closed testing, link play.google.com/apps/testing/com.cgen.app). 
+- Asif (dev.bitrupt@gmail.com) invited to Play Console view access. Verifying all testers complete "Become a tester" before 14-day cycle starts.
+- Channel rule: finance/payment/tip/review talk = Fiverr/direct only, NOT team channel.
+- Payments: $137.24 at restart + $170.00 at completion, tip + review.
