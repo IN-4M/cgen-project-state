@@ -1,3 +1,73 @@
+CGEN Project State — June 17, 2026 (Evening)
+SESSION COMPLETE — Build 9 ready, not yet submitted
+DONE THIS SESSION
+"+" Menu — both screens (mylab.tsx + index.tsx)
+
+Replaced all bottom linked buttons with a single lemon-green "+" bar
+Tapping "+" opens CGEN-styled bottom sheet: Sign Out, FAQ, Upgrade (green), Browse CGEN, Support (green), divider, Delete Account (red)
+Visitor screen menu: FAQ, Upgrade (→ login), Browse CGEN, Support — no Sign Out or Delete
+Sign Out and Delete Account both have Alert confirmations
+Menu animationType="none" (prevents animation crash on return from browser)
+Both "+" bars are inline (not floating) — avoids tab bar conflicts and positioning issues
+
+Pro tier recognition (_layout.tsx + login.tsx)
+
+/check-pro endpoint called on every launch (refreshTierStatus) and on login/register
+Tier priority: premium > pro > free
+Manual WordPress role cgen_pro → app reads it on next launch, sets cgen_tier = 'pro'
+Founders and manual grants now recognized by the app automatically
+
+Upgrade modal — iOS RevenueCat IAP (mylab.tsx)
+
+Tapping Upgrade in "+" menu calls Purchases.getOfferings() → shows native plan picker
+Packages displayed dynamically from RevenueCat (title, price, /mo /yr suffix)
+On purchase: sets cgen_tier + cgen_is_premium in AsyncStorage
+Android fallback: links to c93n.com/upgrade
+Satisfies Apple 2.1b rejection (visible IAP entry point)
+
+Apple 2.1b — also fixed:
+
+Visible Upgrade in My Lab "+" menu (logged-in path)
+Visible Upgrade in Visitor "+" menu (visitor path → login → IAP)
+
+UI changes
+
+My Lab subtitle: "Know Before You Build" → "Business Intelligence"
+Visitor screen: removed "EXPLORE CGEN" button, "ENGINE GUIDE →" now full-width standalone
+useEffect replaces useFocusEffect in mylab.tsx (loads once on mount, not on every focus return)
+
+Pagination — My Lab Saved Intel
+
+WordPress /my-posts endpoint updated: accepts page param, returns { reports, has_more, page }
+20 reports per page, fetches 21 to detect has_more (no extra DB query)
+"LOAD MORE" button appears when has_more: true
+Appends next page to existing list, button disappears on last page
+
+NEXT BUILD QUEUE (build 9 → iOS resubmission)
+
+Build EAS iOS build 9
+Resubmit to Apple with three fixes: 2.3.2 (unique promo images ✓ done prior), 3.1.2(c) (EULA links ✓ done prior), 2.1b (Upgrade visible ✓ done this session)
+Android: closed test restarting on correct track — monitor opted-in count in Play Console, clock starts at 12+
+
+PENDING (next sessions)
+
+FAQ page — build on c93n.com (WordPress), FAQ menu item links to it (currently 404)
+Delete draft from My Lab (mylab.tsx + backend endpoint) — confirmation Alert, Archives untouched
+report.tsx title-decode fix — already saved locally (stripHtml on report.title)
+index.tsx — align Concept Generator modal with new tiers
+WordPress Pro role endpoint already done and tested (June 17 morning session)
+Backend fixes (main.py): missing post title bug, partial-report dedup bug
+Google Play Billing for Android (future build — not blocking)
+Audio + PDF Briefing (future build)
+
+FILES CHANGED THIS SESSION
+
+mylab.tsx — complete rewrite
+index.tsx — complete rewrite
+_layout.tsx — Pro check added to refreshTierStatus
+login.tsx — Pro check added to handleLogin + handleRegister
+WordPress "CGEN Custom Functions" snippet — /my-posts pagination added
+
 # CGEN App — Project State File
 
 **Last updated:** May 17, 2026
