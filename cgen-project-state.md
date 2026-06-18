@@ -1,3 +1,20 @@
+CGEN Project State — June 18, 2026
+BUILD SESSION COMPLETE
+iOS — Build 14 (1.1.0) submitted to Apple, Waiting for Review
+Three rejection fixes included: 2.1b (Upgrade Plan visible in "+" menu), 2.3.2 (unique promo images done prior), 3.1.2c (EULA links done prior). Expecting approval in 1-3 days.
+Note: iOS build number jumped to 14 (not 9) due to failed authentication attempts consuming EAS builds. Version number remains 1.1.0. Apple only requires build number to increment — 14 is valid.
+Android — Build 8 (1.1.0) live on closed testing track
+12 Bitrupt testers opted in on correct track. 14-day clock started June 18. Daily activity confirmed — 10 reports from 6 testers on day 1. Do NOT push new Android build until 14 days complete (around July 2).
+EAS builds used this month: 11 of 30 (6 Android, 5 iOS). 19 remaining.
+Apple 2FA note: SMS to Israeli number unreliable. Use real Apple ID password + wait for device push notification or Android SMS when prompted. App-specific password is NOT what EAS asks for at login — that's for a later step.
+PENDING — next session
+FAQ page on c93n.com (currently 404)
+Delete draft from My Lab
+index.tsx Concept Generator modal — update text to reflect new tiers
+Backend fixes: missing post title + partial dedup bug
+Google Play Billing — wire RevenueCat Android IAP after production access granted
+Audio + PDF Briefing (future)
+
 CGEN Project State — June 17, 2026 (Evening)
 SESSION COMPLETE — Build 9 ready, not yet submitted
 DONE THIS SESSION
