@@ -85,6 +85,30 @@ _layout.tsx — Pro check added to refreshTierStatus
 login.tsx — Pro check added to handleLogin + handleRegister
 WordPress "CGEN Custom Functions" snippet — /my-posts pagination added
 
+Future Architecture — Credit-Based Pricing System (proposed June 21, 2026)
+Concept: Replace the current fixed tier system (Subscriber/Pro/Premium with daily/monthly resets) with a consumable credit pack system. Users buy credit packs (e.g. 5 credits/$5, 15 credits/$12, 40 credits/$25), credits never expire, each report generation costs 1 credit regardless of engine. Light users naturally pay less, heavy users naturally pay more — usage itself becomes the pricing mechanism, no manual tier classification needed.
+Why this over current system:
+
+Solves the edge case where a Premium user needs a heavy burst (e.g. 15 reports in one week) but goes quiet afterward — current daily/monthly caps create artificial friction
+Simplifies user-facing messaging to one concept (credits) instead of four tiers with different reset windows
+Matches proven consumption-based models (OpenAI API, etc.)
+
+Platform constraint — confirmed: Apple and Google do NOT allow automatic usage-based billing that silently charges different amounts based on detected behavior. Every charge requires explicit user tap on a pre-defined product at a pre-defined price. True "smart auto-upgrade" billing is not permitted on either platform. Credit packs are the correct workaround — they deliver the same practical outcome (light users pay little, heavy users pay more) through explicit purchases, fully compliant as Consumable IAP on both platforms.
+Rating-unlock integration: Rating a few Archive posts could grant 1 free credit (replacing the vague "unlock another generation" concept) — plugs cleanly into a credit balance rather than a monthly reset.
+Scope — this is a full architectural rebuild, not a patch:
+
+WordPress role system overhaul (cgen_pro/cgen_premium roles → credit balance field per user)
+All three engine files (intelligence.tsx, validator.tsx, concepts.tsx) — replace AsyncStorage tier/period counter logic with credit balance checks
+New RevenueCat product setup — consumable credit packs (not subscriptions/one-time tier purchases)
+Backend main.py — new endpoint(s) to deduct/check/grant credits, likely a new WordPress meta field or custom table
+Pricing page (c93n.com/upgrade) — full redesign around credit packs
+All 5 legal docs — update to reflect credit-based model
+mylab.tsx Upgrade Plan modal — redesign to show credit packs instead of subscription tiers
+
+Timing: Hold until after the Android 14-day closed test completes (~July 2) and real usage data from the 12 Bitrupt testers is available to inform sensible credit pack sizes and pricing. This should be its own dedicated session, not bundled into a quick build.
+Status: Concept only, not started. No code written, no RevenueCat products created for this yet.
+
+
 # CGEN App — Project State File
 
 **Last updated:** May 17, 2026
