@@ -154,6 +154,9 @@ App Store Connect: new IAP products submitted for review
 Timing: After Android 14-day test completes (~July 2) and production access applied for. Dedicated build session, not bundled with quick fixes.
 Status: Architecture confirmed, no code written yet.
 
+Note for next pricing rebuild session:
+Internal code value 'free' in getTier() and all AsyncStorage tier logic refers to what is publicly called Subscriber in the UI and documentation. These are the same thing. When rewriting the tier/credit system, 'free' stays as the code value — do NOT rename it to 'subscriber' in code. The word "Subscriber" appears only in user-facing text, FAQ, and marketing copy. Any session that sees tier === 'free' in the code should read it as "this user is a Subscriber who has not paid yet." Never confuse the two or introduce 'subscriber' as a code value — it will break the gate logic across all three engine files.
+
 # CGEN App — Project State File
 
 **Last updated:** May 17, 2026
