@@ -1,3 +1,235 @@
+# CGEN App — Project State File
+
+**Last updated:** June 24, 2026
+**Updated by:** Claude (AI & I Build Session)
+**Version:** 1.1.0 — Build 16 (iOS) / Build 9 (Android)
+
+---
+
+## PROJECT OVERVIEW
+
+- **App name:** CGEN (Concept General)
+- **Bundle:** com.cgen.app
+- **Platform:** React Native / Expo Router
+- **Build system:** EAS Build (expo.dev, infowolf account)
+- **EAS Project ID:** 9ba84d87-638f-4d24-97a8-84b958ebcfa2
+- **Backend:** FastAPI / Python on Render.com (cgen-backend-udg1.onrender.com)
+- **WordPress:** c93n.com (Hostinger, Astra Pro, Code Snippets plugin)
+- **API:** Anthropic Claude Sonnet (main.py) + OpenAI TTS (dormant)
+- **App folder:** C:\Users\eastw\cgen-app\
+
+---
+
+## STORE STATUS
+
+### iOS App Store
+- **Build 16 (1.1.0)** — Waiting for Review (submitted June 24, 2026)
+- Fixes in build 16: FAQ page live at c93n.com/faq, Terms URL corrected to terms-conditions everywhere, unique promo images for all 3 IAP products, Restore Purchases button, Terms/Privacy links in Upgrade modal
+- Apple ID: cgen@c93n.com (SMS 2FA — Israeli number, sometimes unreliable, retry or wait)
+
+### Google Play
+- **Build 9 (1.1.0)** — live on Closed testing track
+- 14-day clock: Day 6 confirmed, ~12 testers opted in continuously
+- Production access application target: ~July 2, 2026
+- Bitrupt (Asif Ali Khan, Fiverr): testing Intelligence + Validator first 7 days, Concept Generator last 7 days
+- DO NOT push new Android build until 14-day test completes
+
+---
+
+## TIER SYSTEM — CURRENT (in app now)
+
+| Tier | Code value | How assigned | Limit |
+|------|-----------|--------------|-------|
+| Visitor | no token | not registered | 1 free on Intelligence + 1 on Validator |
+| Subscriber | 'free' | registered | 1 free per engine (welcome), then paywall |
+| Pro | 'pro' | paid bundle or manual WP grant | 3/month per engine (9/month total) |
+| VIP | 'vip' | manual WP grant only, hidden tier | 9/day (3 per engine) |
+
+**CRITICAL CODE CONVENTION:**
+- 'free' in code = Subscriber in UI. NEVER rename 'free' to 'subscriber' in code.
+- VIP and PRO are mutually exclusive — one badge shown, one role per user.
+- Premium tier is RETIRED. All premium role logic being removed in next pricing rebuild.
+- Tier priority in getTier(): vip → pro → free (premium check removed).
+
+---
+
+## FUTURE PRICING ARCHITECTURE (planned — not yet built)
+
+Full rebuild scheduled after Android closed test completes (~July 2).
+
+**New model:**
+- **Visitor:** 1 free on Intelligence + 1 free on Validator. Reports go to Archives.
+- **Subscriber (free forever):** My Lab + all 3 engines. 3 one-time welcome reports on registration. After that: $1.50/report pay-as-you-go. No expiry, no subscription.
+- **Pro (bundle buyer):** Everything Subscriber has + pre-paid bundles:
+  - 11 reports = $15
+  - 22 reports = $30
+  - 55 reports = $75
+  - Credits never expire.
+- **VIP (hidden):** Manually assigned by David. 9 reports/day. No payment. Not shown in FAQ or UI.
+- **Premium tier: ELIMINATED.**
+
+**What the rebuild requires:**
+- WordPress: credit balance meta field per user, welcome report tracking, deduct on generation
+- main.py: credit check before generating, deduct after successful save only
+- All 3 engine files: replace period counter logic with credit balance check
+- New RevenueCat consumable IAP products (single $1.50 + three bundles)
+- mylab.tsx: show credit balance
+- c93n.com/upgrade: full redesign
+- All 5 legal docs updated
+- App Store Connect: new IAP products
+
+---
+
+## ASYNCSTORAGE KEYS (current)
+
+- cgen_token — JWT login token
+- cgen_user_id — WordPress user ID
+- cgen_email — user email
+- cgen_is_premium — legacy, being retired
+- cgen_tier — 'pro' | 'vip' | absent = free/subscriber
+- cgen_intel_count / cgen_valid_count / cgen_concept_count — visitor counters
+- cgen_m_intel_count / cgen_m_valid_count — free member counters
+- cgen_pro_intel / cgen_pro_valid / cgen_pro_concept — Pro monthly, period-stamped
+- cgen_prem_intel / cgen_prem_valid / cgen_prem_concept — VIP daily, period-stamped
+
+---
+
+## APP FILES — CURRENT STATE
+
+### _layout.tsx
+- Purchases.configure on startup (iOS only)
+- refreshTierStatus(): calls /check-premium → /check-pro → /check-vip in sequence
+- Tier priority: vip > pro > free. Sets cgen_tier in AsyncStorage.
+
+### login.tsx
+- Pro check + VIP check in both handleLogin and handleRegister
+- Sets cgen_tier on login/register from WordPress responses
+
+### index.tsx
+- Visitor view: ENGINE GUIDE full-width standalone button, no EXPLORE CGEN
+- My Lab view: MY LAB title, "Business Intelligence" subtitle
+- "+" inline bar opens bottom sheet: FAQ, Upgrade Plan (green), Browse CGEN Archives, Support
+- Concept Generator modal: "CGEN · PRO & PREMIUM" / "Paid Members Only"
+
+### mylab.tsx
+- useFocusEffect (NOT useEffect) — refreshes on every focus return
+- "+" inline bar opens bottom sheet: Sign Out, FAQ, Upgrade Plan (green), Browse CGEN Archives, Support, Delete Account (red)
+- Upgrade Plan → RevenueCat modal (iOS) or c93n.com/upgrade (Android)
+- PRO badge: lemon-green capsule in header, shows when cgen_tier === 'pro'
+- VIP badge: identical style, shows when cgen_tier === 'vip'
+- Pagination: 20 reports per page, Load More button
+- Restore Purchases button in Upgrade modal
+- Terms link: c93n.com/terms-conditions
+- Privacy link: c93n.com/privacy-policy
+
+### intelligence.tsx / validator.tsx / concepts.tsx
+- Alert imported
+- Tier type: 'visitor' | 'free' | 'pro' | 'vip' (premium removed)
+- getTier(): checks vip → pro → free (no premium check)
+- if (data.generating): setLoading(false), setLoadingStep(0), counter bump, Alert, router.back()
+- VIP uses PREM_KEY + dayStamp() (same keys as retired premium)
+- Terms link: c93n.com/terms-conditions
+
+---
+
+## BACKEND — main.py (current)
+
+### Background generation (members)
+- BackgroundTasks imported from fastapi
+- _bg_intelligence(), _bg_validator(), _bg_landing() functions
+- Member path on all 3 engines: returns {generating: true} immediately, runs in background
+- Visitor path: synchronous (unchanged)
+- Credits deduct ONLY after successful WordPress save — never on failure or timeout
+
+### Endpoints
+- POST /generate-concept
+- POST /generate-landing (background for members)
+- POST /generate-intelligence (background for members, includes duplicate check)
+- POST /generate-validator (background for members)
+- POST /make-public
+- POST /poll/vote
+- GET /poll/results/{poll_id}
+
+### WordPress connection
+- WP_SECRET env var: CGEN_API_2026
+- Custom endpoints via Code Snippets: create-post, update-post, upload-media
+- NOT in functions.php (Astra theme auto-update risk)
+
+### Category IDs
+- CAT_INTELLIGENCE = 19
+- CAT_VALIDATOR = 20
+- CAT_CONCEPT = 1
+
+---
+
+## WORDPRESS — Code Snippets (active)
+
+- CGEN Custom Functions — my-posts (paginated), my-post/{id}, get-user-id, rate-engine, check-premium, paypal-webhook, claim-premium, upload-media, create-post, update-post, delete-account
+- CGEN Pro Role & Endpoint — cgen_pro role + /check-pro endpoint
+- CGEN VIP Role & Endpoint — cgen_vip role + /check-vip endpoint
+- WP_SECRET key header authentication on all write endpoints
+
+### Active WordPress roles
+- Subscriber (WP default) = 'free' in code
+- cgen_pro = Pro tier
+- cgen_vip = VIP hidden tier
+- cgen_premium = legacy, being retired
+
+### Key URLs
+- FAQ: c93n.com/faq ✅ live
+- Terms: c93n.com/terms-conditions (NOT terms-and-conditions)
+- Privacy: c93n.com/privacy-policy
+- Delete account: c93n.com/delete-account
+- Upgrade: c93n.com/upgrade
+
+---
+
+## REVENUECAT
+
+- iOS public key: appl_QhBYffCpsXeRhtMyWzJvUJfOkFg
+- Products: com.cgen.app.pro ($24.99), com.cgen.app.premium.monthly ($6.99), com.cgen.app.premium.annual ($69.99)
+- Entitlements: 'pro', 'premium'
+- Note: subscription products will be replaced by consumable bundles in next pricing rebuild
+
+---
+
+## PENDING — NEXT BUILD (Build 17 iOS / Build 10 Android)
+
+**Must have (Apple blocking):**
+- Deploy updated main.py to Render (background generation)
+- Full pricing architecture rebuild (see Future Pricing Architecture above)
+- Remove all Premium tier logic from all engine files
+- New RevenueCat consumable IAP products
+- Update all 5 legal docs
+- mylab.tsx: show credit balance
+
+**Also pending:**
+- Delete draft from My Lab (mylab.tsx + backend endpoint)
+- index.tsx Concept Generator modal text update for new tiers
+- report.tsx title-decode fix (stripHtml on report.title — saved locally)
+- App Review Notes: include FAQ URL, Terms URL, Privacy URL, IAP path
+
+---
+
+## DESIGN TOKENS
+
+- Background: #0a0a0a
+- Accent (lemon-green): #c8f55a
+- Border dark: #1e1e1e / #2a2a2a
+- Text primary: #ffffff
+- Text muted: #999999 / #555555
+- Border radius: 4px (sharp), 8px (medium)
+
+---
+
+## PROCESS RULES (mandatory)
+
+- Read all pending items together and confirm complete before any build — no exceptions
+- No unrequested changes ever — flag anything extra explicitly before touching it
+- Pre-build checklist review is mandatory
+- Credits deduct ONLY after successful WordPress save, never at start of generation
+- 'free' in code = Subscriber in UI — never rename in code
+
 CGEN Project State — June 18, 2026
 BUILD SESSION COMPLETE
 iOS — Build 14 (1.1.0) submitted to Apple, Waiting for Review
