@@ -1,3 +1,97 @@
+# CGEN Project State — June 26, 2026
+
+## SESSION SUMMARY — Pricing Rebuild + Build 17 Prep
+
+### STORE STATUS
+- **iOS:** Build 16 (1.1.0) — Waiting for Review (submitted June 24)
+- **Android:** Build 9 (1.1.0) — Day 9+ of 14-day closed test, ~12 testers active
+- **Production access target:** ~July 2, 2026
+
+### COMPLETED THIS SESSION
+
+**New Pricing Architecture — fully implemented:**
+- Visitor: 1 free on Intelligence + 1 free on Validator
+- Subscriber (free): My Lab + all 3 engines + 3 one-time welcome reports. After that $1.99/report
+- Pro (bundle buyer): 11/$14.99, 22/$29.99, 55/$69.99. Credits never expire.
+- VIP (hidden, manual): replaces Premium entirely. 9 reports/day (3 per engine). Daily reset.
+- Premium tier: retired. WordPress role kept temporarily, being replaced by VIP.
+
+**WordPress:**
+- New snippet "CGEN Credit System": /check-credits, /deduct-credit, /add-credits endpoints
+- New snippet "CGEN VIP Role & Endpoint": cgen_vip role + /check-vip endpoint
+- Credit balance meta fields per user (cgen_credits, cgen_welcome_count, cgen_welcome_used)
+- Initialized on new user registration
+
+**main.py (deployed to Render):**
+- Credit check before generation (check_credits helper)
+- Credit deduction after successful save (deduct_credit helper)
+- VIP bypass — no credit check for VIP users
+- Welcome report tracking (type: 'welcome') vs paid credit (type: 'credit')
+- PDF generation added to all 3 background tasks (_bg_intelligence, _bg_validator, _bg_landing)
+- Tier field added to all 3 request models
+
+**App files:**
+- All 3 engine files: tier passed in fetch body, no_credits handler, free gate removed (backend handles)
+- mylab.tsx: credit balance display in header, new bundle purchase modal, RevenueCat offering flow
+- report.tsx: 3-button stack (Back to My Lab, Make Public, Download PDF), PDF URL extracted from content
+- index.tsx: visitor notice text white, Concept Generator modal updated, accessNote text updated
+- All files: Powered by paddingBottom raised to 32, menu CLOSE button brighter and raised
+
+**App Store Connect:**
+- 4 new consumable IAP products created and submitted for review:
+  - com.cgen.app.report.single — $1.99
+  - com.cgen.app.reports.11 — $14.99
+  - com.cgen.app.reports.22 — $29.99
+  - com.cgen.app.reports.55 — $69.99
+
+**RevenueCat:**
+- 4 consumable products added
+- 4 packages added to default offering (cgen_single, cgen_bundle_11, cgen_bundle_22, cgen_bundle_55)
+- Purchase flow uses getOfferings() + purchasePackage() correctly
+
+**Legal docs (all updated June 25, 2026):**
+- Privacy Policy, Terms & Conditions, Cookie Policy, Legal Disclaimer, Accessibility Statement
+- New Refund Policy written and published at c93n.com/refund-policy (added to footer)
+- All docs reflect new credit-based model, PayPal kept for future PDF downloads
+
+**c93n.com/upgrade:**
+- Fully redesigned for new pricing model
+- Three tiers: Visitor / Subscriber / Pro
+- Four pricing boxes: Single / Bundle 11 / Bundle 22 / Bundle 55 (highlighted)
+- "Credits never expire" callout replacing "First 100 get Premium free"
+
+**FAQ page:**
+- Built and live at c93n.com/faq
+- Three sections: What is CGEN, How to Use, Plans & Access
+- Reflects new pricing model
+
+---
+
+### PENDING BEFORE BUILD 17
+
+- [ ] Fresh app screenshots (outdated — show old Premium/pricing language)
+- [ ] Expo Go download blocked by Google Play Store issue on Android — retry when resolved
+- [ ] Awaiting Bitrupt response on any major bugs to include in build
+- [ ] App Review Notes update in App Store Connect (FAQ URL, Terms URL, IAP path)
+- [ ] Build 17 EAS iOS + submit to Apple
+- [ ] Switch Bitrupt testers from cgen_premium to cgen_vip in WordPress before Android build
+
+---
+
+### CODE CONVENTIONS — CRITICAL
+
+- `'free'` in code = Subscriber in UI. NEVER rename to 'subscriber' in code.
+- `'premium-limit'` wall mode is used for VIP daily limit — works correctly, rename to 'vip-limit' in next rebuild
+- `applyEntitlements()` still references 'premium' entitlement — harmless, VIP is never purchased via RevenueCat
+- All Premium references in code are legacy — full cleanup in next pricing rebuild session
+
+---
+
+### GOOGLE PLAY
+- In-app products cannot be created yet — requires production access (~July 2)
+- Android falls back to c93n.com/upgrade for purchases until production access granted
+- Build 10 (Android) to be built after 14-day test completes
+
 # CGEN App — Project State File
 
 **Last updated:** June 24, 2026
