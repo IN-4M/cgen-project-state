@@ -92,6 +92,11 @@
 - Android falls back to c93n.com/upgrade for purchases until production access granted
 - Build 10 (Android) to be built after 14-day test completes
 
+Note for next session — VIP tier not recognized on website
+The website (Intelligence Engine, Idea Validator, Concept Generator) does not send a tier field in any of its fetch requests to main.py. Backend's credit-check logic in generate_intelligence, generate_validator, and generate_landing only bypasses the credit check when data.tier === 'vip' — since the website never sends this field, a VIP user generating from the website (not the app) will be checked against credits like a regular Subscriber, even though they should have free unlimited daily access (3/engine/day).
+Impact: Low — VIP is a small, manually-assigned hidden group (family, friends, testers). Most VIP usage happens through the app where tier is already correctly passed. This only matters if a VIP user specifically uses the website instead of the app.
+Fix needed (next session): The website's cgData object (injected by WordPress via cgenAdminBypass mechanism) would need to also expose the user's tier, OR the engine JS would need to call /check-vip itself before generating and include tier: 'vip' in the fetch body if true. Same fix applies to all three engine HTML blocks (Intelligence Mode A/B, Idea Validator, Concept Generator).
+
 # CGEN App — Project State File
 
 **Last updated:** June 24, 2026
